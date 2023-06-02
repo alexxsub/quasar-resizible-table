@@ -4,47 +4,54 @@
 import { ref, reactive, watch } from "vue";
 import { Notify } from "quasar";
 
-let curCol, nxtCol, pageX, curColWidth, nxtColWidth; //параметры изменяего столбца и соседа
-const enableResizible = ref(false); //Собственно включение или нет ресайзинга
-let columns = reactive(
-  [
-    {
-      name: "desc",
-      required: true,
-      label: "Dessert (100g serving)",
-      align: "left",
-      field: (row) => row.name,
-      format: (val) => `${val}`,
-      sortable: true,
-    },
-    {
-      name: "calories",
-      align: "center",
-      label: "Calories",
-      field: "calories",
-      sortable: true,
-    },
-    { name: "fat", label: "Fat (g)", field: "fat", sortable: true },
-    { name: "carbs", label: "Carbs (g)", field: "carbs" },
-    { name: "protein", label: "Protein (g)", field: "protein" },
-    { name: "sodium", label: "Sodium (mg)", field: "sodium" },
-    {
-      name: "calcium",
-      label: "Calcium (%)",
-      field: "calcium",
-      sortable: true,
-      sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
-    },
-    {
-      name: "iron",
-      label: "Iron (%)",
-      field: "iron",
-      sortable: true,
-      sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
-    },
-  ] //собственно список натсроек столбцов
-);
+let curCol, //текщий столбец
+  nxtCol, //следующий столбец
+  pageX, //стартовая позиция по горизонтале
+  curColWidth, //ширина текщего столбца
+  nxtColWidth; //ширина следующего столбца
+
+const enableResizible = ref(false); //Флаг включения или нет ресайзинга
+
+// Параметры столбцов
+let columns = reactive([
+  {
+    name: "desc",
+    required: true,
+    label: "Dessert (100g serving)",
+    align: "left",
+    field: (row) => row.name,
+    format: (val) => `${val}`,
+    sortable: true,
+  },
+  {
+    name: "calories",
+    align: "center",
+    label: "Calories",
+    field: "calories",
+    sortable: true,
+  },
+  { name: "fat", label: "Fat (g)", field: "fat", sortable: true },
+  { name: "carbs", label: "Carbs (g)", field: "carbs" },
+  { name: "protein", label: "Protein (g)", field: "protein" },
+  { name: "sodium", label: "Sodium (mg)", field: "sodium" },
+  {
+    name: "calcium",
+    label: "Calcium (%)",
+    field: "calcium",
+    sortable: true,
+    sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
+  },
+  {
+    name: "iron",
+    label: "Iron (%)",
+    field: "iron",
+    sortable: true,
+    sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
+  },
+]);
 let sortableColumns = []; //список имен столбцов, которые сортируются
+
+// данные для таблицы
 const data = reactive([
   {
     name: "Frozen Yogurt",
@@ -148,6 +155,7 @@ const data = reactive([
   },
 ]);
 
+// отображение нотификатора
 function showNotif(message, color, icon) {
   Notify.create({
     message,
@@ -156,24 +164,12 @@ function showNotif(message, color, icon) {
   });
 }
 
-function mouseOver(e) {
-  e.srcElement.style.backgroundColor = "blue";
-}
-function mouseOut(e) {
-  e.srcElement.style.backgroundColor = "silver";
-}
+// очищаем параметры при отжатии кнопки
 function mouseUp(e) {
-  curCol = undefined;
-  nxtCol = undefined;
-  pageX = undefined;
-  nxtColWidth = undefined;
-  curColWidth = undefined;
+  curCol = nxtCol = pageX = nxtColWidth = curColWidth = undefined;
 }
+// инициализация стартовых данных при нажатии кнопки мыши
 function mouseDown(e) {
-  // curCol= e.target.parentElement;
-  // curColWidth = e.target.parentElement.offsetWidth;
-  // pageX = e.pageX;
-
   curCol = e.target.parentElement;
   nxtCol = curCol.nextElementSibling;
   pageX = e.pageX;
@@ -184,12 +180,8 @@ function mouseDown(e) {
   if (nxtCol) nxtColWidth = nxtCol.offsetWidth - padding;
 }
 
+// двигаем мышкой, вычисляем координаты, изменяем ширину столбца
 function mouseMove(e) {
-  // if (curCol) {
-  //   curCol.style.width =
-  //     curCol + (e.pageX - pageX) + "px";
-  // }
-
   if (curCol) {
     var diffX = e.pageX - pageX;
 
@@ -198,11 +190,11 @@ function mouseMove(e) {
     curCol.style.width = curColWidth + diffX + "px";
   }
 }
-
+// восстанавливаем сортировку
 function sortableTable() {
   columns.forEach((el) => (el.sortable = sortableColumns.includes(el.name)));
 }
-
+// выключаем сортировку на столбцах
 function unsortableTable() {
   sortableColumns = [];
   columns.forEach((el) => {
@@ -215,33 +207,25 @@ function unsortableTable() {
     return e;
   });
 }
-
+// создаем вертикальную линию, за которую будем двигать
 function createDiv(h) {
   var div = document.createElement("div");
-  div.style.top = 0;
-  div.style.right = 0;
-  div.style.width = "3px";
-  div.style.position = "absolute";
-  div.style.cursor = "col-resize";
-  div.style.userSelect = "none";
-  div.style.backgroundColor = "silver";
-  div.style.userSelect = "none";
   div.style.height = `${h}px`;
+  div.className = "resizibleDiv";
   setListeners(div);
   return div;
 }
-
+// устанавливаем слушаетли событий на нажатие кнопки мыши
 function setListeners(div) {
-  div.addEventListener("mouseover", mouseOver);
-  div.addEventListener("mouseout", mouseOut);
   div.addEventListener("mousedown", mouseDown, false);
+  div.addEventListener("mouseup", mouseUp);
 }
+// убираем слушатели событий
 function unsetListeners(div) {
-  div.removeEventListener("mouseover", mouseOver);
-  div.removeEventListener("mouseout", mouseOut);
   div.removeEventListener("mousedown", mouseDown, false);
+  div.removeEventListener("mouseup", mouseUp);
 }
-
+// выключаем изменение размеров
 function unresizeableTable() {
   document
     .querySelector(".q-table thead")
@@ -260,24 +244,27 @@ function unresizeableTable() {
   }
   showNotif("Выключено изменение ширины столбцов", "red");
 }
+// включаем режим изменения столбцов
 function resizeableTable() {
+  // выключаем сортировку
   unsortableTable();
+  // подключаем слушатели на заголовок таблицы
   document
     .querySelector(".q-table thead")
     .addEventListener("dblclick", resetWith);
   document.addEventListener("mousemove", mouseMove);
-  document.addEventListener("mouseup", mouseUp);
+
   const table = document.querySelectorAll(".q-table"),
     cols = document.querySelectorAll(".q-table th");
+  // перебираем все столбцы и добавляем вертикальную линию для управления мышью
   for (var i = 0; i < cols.length; i++) {
     var div = createDiv(table[0].clientHeight);
-    cols[i].style.width = cols[i].clientWidth + "px";
     cols[i].appendChild(div);
     cols[i].style.position = "relative";
   }
   showNotif("Включено изменение ширины столбцов", "green");
 }
-
+// сброс внесенных изменений ширины столбцов
 function resetWith() {
   const cols = document.querySelectorAll(".q-table th");
   for (var i = 0; i < cols.length; i++) {
@@ -286,6 +273,7 @@ function resetWith() {
   showNotif("Сброшены изменения ширины столбцов", "purple");
 }
 
+// вычисление разницы отступов соседних столбцов
 function paddingDiff(col) {
   if (getStyleVal(col, "box-sizing") == "border-box") {
     return 0;
@@ -295,9 +283,12 @@ function paddingDiff(col) {
   var padRight = getStyleVal(col, "padding-right");
   return parseInt(padLeft) + parseInt(padRight);
 }
+// вычисляем реальные размеры
 function getStyleVal(elm, css) {
   return window.getComputedStyle(elm, null).getPropertyValue(css);
 }
+
+// вызываем функцию вкл или выкл режима, в зависимости от состнояния флага
 watch(enableResizible, (value) => {
   if (value) resizeableTable();
   else unresizeableTable();
@@ -319,6 +310,7 @@ watch(enableResizible, (value) => {
       />
     </div>
     <q-table
+      width="500"
       ref="mytable"
       title="Treats"
       :rows="data"
@@ -327,4 +319,18 @@ watch(enableResizible, (value) => {
     ></q-table>
   </div>
 </template>
-<style></style>
+<style>
+.resizibleDiv {
+  top: 0;
+  right: 0;
+  width: 3px;
+  position: absolute;
+  cursor: col-resize;
+  user-select: none;
+  background-color: silver;
+  z-index: 1000;
+}
+.resizibleDiv:hover {
+  background-color: blue !important;
+}
+</style>
