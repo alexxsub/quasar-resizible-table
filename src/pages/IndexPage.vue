@@ -218,12 +218,12 @@ function createDiv(h) {
 // устанавливаем слушаетли событий на нажатие кнопки мыши
 function setListeners(div) {
   div.addEventListener("mousedown", mouseDown, false);
-  div.addEventListener("mouseup", mouseUp);
+  div.addEventListener("mouseup", mouseUp, false);
 }
 // убираем слушатели событий
 function unsetListeners(div) {
   div.removeEventListener("mousedown", mouseDown, false);
-  div.removeEventListener("mouseup", mouseUp);
+  div.removeEventListener("mouseup", mouseUp, false);
 }
 // выключаем изменение размеров
 function unresizeableTable() {
