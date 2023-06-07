@@ -2,7 +2,6 @@
 // по мотивам https://www.brainbell.com/javascript/making-resizable-table-js.html
 
 import { watch, computed, reactive, onMounted } from "vue";
-import { Notify } from "quasar";
 
 const props = defineProps({
   rows: {
@@ -41,15 +40,6 @@ let curCol, //текщий столбец
   nxtColWidth; //ширина следующего столбца
 
 let sortableColumns = []; //список имен столбцов, которые сортируются
-
-// отображение нотификатора
-function showNotif(message, color, icon) {
-  Notify.create({
-    message,
-    color,
-    icon,
-  });
-}
 
 // очищаем параметры при отжатии кнопки
 function mouseUp(e) {
@@ -134,7 +124,6 @@ function resizeableTable() {
     cols[i].appendChild(div);
     cols[i].style.position = "relative";
   }
-  showNotif("Включено изменение ширины столбцов", "green");
 }
 
 // выключаем изменение размеров
@@ -154,7 +143,6 @@ function unresizeableTable() {
       cols[i].removeChild(divs[j]);
     }
   }
-  showNotif("Выключено изменение ширины столбцов", "red");
 }
 
 // сброс внесенных изменений ширины столбцов
@@ -163,7 +151,6 @@ function resetWith() {
   for (var i = 0; i < cols.length; i++) {
     cols[i].style.width = "";
   }
-  showNotif("Сброшены изменения ширины столбцов", "purple");
 }
 
 // вычисление разницы отступов соседних столбцов
