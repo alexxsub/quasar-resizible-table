@@ -1,7 +1,7 @@
 <script setup>
 // по мотивам https://www.brainbell.com/javascript/making-resizable-table-js.html
 
-import { watch, computed, reactive, onMounted } from "vue";
+import { watch, computed, onMounted } from "vue";
 
 const props = defineProps({
   rows: {
@@ -21,8 +21,7 @@ const props = defineProps({
   title: String,
   width: String,
 });
-// переопределяем массив для внутренней манипуляции
-let mycolumns = reactive(props.columns);
+
 const uniqueId =
   Date.now().toString(36) + Math.random().toString(36).substring(2);
 
@@ -164,7 +163,7 @@ watch(resizible, (value) => {
     :width="width"
     :title="title"
     :rows="rows"
-    :columns="mycolumns"
+    :columns="columns"
     row-key="name"
     :table-class="uniqueId"
   ></q-table>
