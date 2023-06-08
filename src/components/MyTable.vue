@@ -1,7 +1,7 @@
 <script setup>
 // по мотивам https://www.brainbell.com/javascript/making-resizable-table-js.html
 
-import { watch, computed, onMounted } from "vue";
+import { watch, computed, reactive, onMounted } from "vue";
 
 const props = defineProps({
   rows: {
@@ -26,7 +26,8 @@ const uniqueId =
   Date.now().toString(36) + Math.random().toString(36).substring(2);
 
 let table;
-
+let sortableColumns;
+let MyColumns = reactive(props.columns);
 onMounted(() => {
   // получаем указатель на нашу таблицу в DOM
   table = document.getElementsByClassName(uniqueId)[0].firstChild;
@@ -83,8 +84,25 @@ function unsetListeners(div) {
   div.removeEventListener("mousedown", mouseDown, false);
   div.removeEventListener("mouseup", mouseUp, false);
 }
+function sortableTable() {
+  MyColumns.forEach((el) => (el.sortable = sortableColumns.includes(el.name)));
+}
+function unsortableTable() {
+  sortableColumns = [];
+  props.columns.forEach((el) => {
+    if (!(el.sortable === undefined) && el.sortable) {
+      sortableColumns.push(el.name); //запоминаяем столбцы, которые имели сортировку
+    }
+  });
+  MyColumns = props.columns.map((e) => {
+    if (e.sortable) e.sortable = false;
+    return e;
+  });
+}
+
 // включаем режим изменения столбцов
 function resizeableTable() {
+  unsortableTable(); //отключаем сортировку
   // подключаем слушателя на заголовок таблицы
   // функция обнуления изменений ширины
 
@@ -107,6 +125,7 @@ function resizeableTable() {
 
 // выключаем изменение размеров
 function unresizeableTable() {
+  sortableTable(); //возвращаем сортировку
   table
     .getElementsByTagName("thead")[0]
     .removeEventListener("dblclick", resetWith);
@@ -161,7 +180,7 @@ watch(resizible, (value) => {
     :width="width"
     :title="title"
     :rows="rows"
-    :columns="columns"
+    :columns="MyColumns"
     row-key="name"
     :table-class="uniqueId"
   ></q-table>
