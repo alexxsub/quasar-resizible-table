@@ -38,8 +38,6 @@ let curCol, //текщий столбец
   curColWidth, //ширина текщего столбца
   nxtColWidth; //ширина следующего столбца
 
-let sortableColumns = []; //список имен столбцов, которые сортируются
-
 // очищаем параметры при отжатии кнопки
 function mouseUp(e) {
   curCol = nxtCol = pageX = nxtColWidth = curColWidth = undefined;
@@ -68,9 +66,9 @@ function mouseMove(e) {
 }
 
 // создаем вертикальную линию, за которую будем двигать
-function createDiv(h) {
+function createDiv() {
   var div = document.createElement("div");
-  div.style.height = `${h}px`;
+  div.style.height = `${table.clientHeight}px`;
   div.className = "columnSelector";
   setListeners(div);
   return div;
@@ -101,7 +99,7 @@ function resizeableTable() {
   // перебираем все столбцы и добавляем вертикальную линию для управления мышью
 
   for (var i = 0; i < cols.length; i++) {
-    var div = createDiv(table.clientHeight);
+    var div = createDiv();
     cols[i].appendChild(div);
     cols[i].style.position = "relative";
   }
