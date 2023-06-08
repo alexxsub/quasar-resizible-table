@@ -67,23 +67,7 @@ function mouseMove(e) {
     curCol.style.width = curColWidth + diffX + "px";
   }
 }
-// восстанавливаем сортировку
-function sortableTable() {
-  mycolumns.forEach((el) => (el.sortable = sortableColumns.includes(el.name)));
-}
-// выключаем сортировку на столбцах
-function unsortableTable() {
-  sortableColumns = [];
-  mycolumns.forEach((el) => {
-    if (!(el.sortable === undefined) && el.sortable) {
-      sortableColumns.push(el.name); //запоминаяем столбцы, которые имели сортировку
-    }
-  });
-  mycolumns = mycolumns.map((e) => {
-    if (e.sortable) e.sortable = false;
-    return e;
-  });
-}
+
 // создаем вертикальную линию, за которую будем двигать
 function createDiv(h) {
   var div = document.createElement("div");
@@ -104,8 +88,6 @@ function unsetListeners(div) {
 }
 // включаем режим изменения столбцов
 function resizeableTable() {
-  // выключаем сортировку
-  unsortableTable();
   // подключаем слушателя на заголовок таблицы
   // функция обнуления изменений ширины
 
@@ -133,7 +115,6 @@ function unresizeableTable() {
     .removeEventListener("dblclick", resetWith);
 
   document.removeEventListener("mousemove", mouseMove);
-  sortableTable();
   const cols = table.getElementsByTagName("th");
 
   for (var i = 0; i < cols.length; i++) {
@@ -190,16 +171,27 @@ watch(resizible, (value) => {
 
 <style>
 .columnSelector {
-  top: 0;
+  /* top: 0;
   right: 0;
   width: 2px;
   position: absolute;
   cursor: col-resize;
   user-select: none;
   background-color: silver;
+  z-index: 1000; */
+
+  display: block;
+  position: absolute;
+  cursor: col-resize;
+  width: 7px;
+  right: 0;
+  top: 0;
   z-index: 1000;
+  border-right: 2px solid transparent;
 }
 .columnSelector:hover {
-  background-color: blue !important;
+  /* background-color: blue !important; */
+
+  border-color: blue !important;
 }
 </style>
