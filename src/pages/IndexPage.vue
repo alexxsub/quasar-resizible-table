@@ -162,14 +162,14 @@ const data = [
         { label: 'Resizible', value: true },
       ]"
     />
-    <q-table :rows="data" :columns="columns" title="q-table"></q-table>
     <my-table
       :resizible="enableResizible"
       :rows="data"
       :columns="columns"
       title="my-table"
       width="500"
-    ></my-table>
+    />
+    <q-table :rows="data" :columns="columns" title="q-table" />
   </div>
 </template>
 <style></style>
