@@ -33,10 +33,10 @@ onMounted(() => {
   table = document.getElementsByClassName(uniqueId)[0].firstChild;
 });
 
-let curCol, //текщий столбец
+let curCol, //текущий столбец
   nxtCol, //следующий столбец
-  pageX, //стартовая позиция по горизонтале
-  curColWidth, //ширина текщего столбца
+  pageX, //стартовая позиция по горизонтали
+  curColWidth, //ширина текущего столбца
   nxtColWidth; //ширина следующего столбца
 
 // очищаем параметры при отжатии кнопки
@@ -55,7 +55,7 @@ function mouseDown(e) {
   if (nxtCol) nxtColWidth = nxtCol.offsetWidth - padding;
 }
 
-// двигаем мышкой, вычисляем координаты, изменяем ширину столбца
+// двигаем мышкой, вычисляем координаты, изменяем ширину столбцов
 function mouseMove(e) {
   if (curCol) {
     var diffX = e.pageX - pageX;
@@ -74,7 +74,7 @@ function createDiv() {
   setListeners(div);
   return div;
 }
-// устанавливаем слушаетли событий на нажатие кнопки мыши
+// устанавливаем слушатели событий на нажатие кнопки мыши
 function setListeners(div) {
   div.addEventListener("mousedown", mouseDown, false);
   div.addEventListener("mouseup", mouseUp, false);
@@ -84,9 +84,11 @@ function unsetListeners(div) {
   div.removeEventListener("mousedown", mouseDown, false);
   div.removeEventListener("mouseup", mouseUp, false);
 }
+// включаем сортировку столбцов
 function sortableTable() {
   MyColumns.forEach((el) => (el.sortable = sortableColumns.includes(el.name)));
 }
+// выключаем сортировку столбцов
 function unsortableTable() {
   sortableColumns = [];
   props.columns.forEach((el) => {
