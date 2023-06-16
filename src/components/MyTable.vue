@@ -14,7 +14,7 @@ const props = defineProps({
     default: () => [],
     required: true,
   },
-  resizible: {
+  resizable: {
     type: Boolean,
     default: false,
   },
@@ -101,7 +101,7 @@ function unsortableTable() {
 }
 
 // включаем режим изменения столбцов
-function resizeableTable() {
+function resizableTable() {
   unsortableTable(); //отключаем сортировку
   // подключаем слушателя на заголовок таблицы
   // функция обнуления изменений ширины
@@ -124,7 +124,7 @@ function resizeableTable() {
 }
 
 // выключаем изменение размеров
-function unresizeableTable() {
+function unresizableTable() {
   sortableTable(); //возвращаем сортировку
   table
     .getElementsByTagName("thead")[0]
@@ -166,12 +166,12 @@ function getStyleVal(elm, css) {
   return window.getComputedStyle(elm, null).getPropertyValue(css);
 }
 
-const resizible = computed(() => props.resizible);
+const resizable = computed(() => props.resizable);
 
 // вызываем функцию вкл или выкл режима, в зависимости от состнояния флага
-watch(resizible, (value) => {
-  if (value) resizeableTable();
-  else unresizeableTable();
+watch(resizable, (value) => {
+  if (value) resizableTable();
+  else unresizableTable();
 });
 </script>
 

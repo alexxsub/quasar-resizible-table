@@ -5,7 +5,7 @@ import { ref } from "vue";
 
 import MyTable from "../components/MyTable.vue";
 
-const enableResizible = ref(false); //Флаг включения или нет ресайзинга
+const enableResizable = ref(false); //Флаг включения или нет ресайзинга
 
 // Параметры столбцов
 let columns = [
@@ -152,18 +152,18 @@ const data = [
 <template>
   <div class="q-pa-md">
     <q-btn-toggle
-      v-model="enableResizible"
+      v-model="enableResizable"
       no-caps
       toggle-color="primary"
       color="white"
       text-color="black"
       :options="[
-        { label: 'Unresizible', value: false },
-        { label: 'Resizible', value: true },
+        { label: 'UnResizable', value: false },
+        { label: 'Resizable', value: true },
       ]"
     />
     <my-table
-      :resizible="enableResizible"
+      :resizable="enableResizable"
       :rows="data"
       :columns="columns"
       title="my-table"
